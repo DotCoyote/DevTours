@@ -1,5 +1,5 @@
 <template>
-  <div :class="alertClasses" class="border border-solid rounded">
+  <div :class="alertClasses" class="alert border border-solid rounded text-red-900 px-6 py-3">
     <slot />
   </div>
 </template>
@@ -35,3 +35,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.alert {
+  + * {
+    margin-top: 20px;
+  }
+}
+</style>

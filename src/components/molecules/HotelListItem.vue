@@ -6,9 +6,18 @@
         id: hotelData.id
       }
     }"
-    class="mt-6 border-t border-solid border-gray-300"
+    class="bg-gray-200 rounded"
   >
-    <h3>{{ hotelData.name }}</h3>
+    <div class="h-56 overflow-hidden object-cover rounded-tr rounded-tl">
+      <img :src="hotelData.images[0].lowres" class="">
+    </div>
+    <div class="p-5">
+      <h1 class="text-2xl font-bold text-green-800 py-2">{{ hotelData.name }}</h1>
+      <p class="text-sm text-black">{{ hotelData.description }}</p>
+      <span class="py-2 px-3 mt-4 px-6 text-white bg-green-500 inline-block rounded">
+        Details
+      </span>
+    </div>
   </router-link>
 </template>
 

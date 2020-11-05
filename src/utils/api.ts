@@ -1,6 +1,6 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import { URL as baseURL } from '@/consts/api.consts';
-import { ApiResponse } from '@/typings/api.types';
+import { ApiResponse, APIRoutes } from '@/typings/api.types';
 
 const cancelTokens: { [key: string]: any } = {};
 
@@ -39,11 +39,11 @@ export const HTTP = axios.create({
 //       API Class
 // ====================================
 export function useApi() {
-  async function post(route: string, params?: object): Promise<ApiResponse> {
-    const res = await HTTP.post(route, params);
-
-    return (res as ApiResponse);
-  }
+  // async function post(route: string, params?: object): Promise<ApiResponse> {
+  //   const res = await HTTP.post(route, params);
+  //
+  //   return (res as ApiResponse);
+  // }
 
   async function get(route: string, params?: object): Promise<ApiResponse> {
     const res = await HTTP.get(route, params);
@@ -63,12 +63,16 @@ export function useApi() {
       // ====================================
       //       Product routes
       // ====================================
-      case 'getLocations':
+      case APIRoutes.GET_LOCATIONS:
         response = get('/api/Location', params) as any;
         break;
 
-      case 'getHotels':
+      case APIRoutes.GET_HOTELS:
         response = get('/api/Hotel', params) as any;
+        break;
+
+      case APIRoutes.GET_AVAILABILITIES:
+        response = get('/api/Availabilities', params) as any;
         break;
 
       // ====================================
