@@ -9,51 +9,54 @@
     <fieldset>
       <legend class="text-2xl">Hotel Search</legend>
 
-<!--      Location-->
-      <div>
+      <div class="flex flex-row justify-between items-center">
+        <!--      Location-->
+        <div>
+          <label for="searchLocation">Location:</label>
+          <select id="searchLocation" v-model="searchLocation">
+            <option />
+            <option
+              v-for="location in locations"
+              :key="location.id"
+              :value="location"
+            >
+              {{ location.name }}
+            </option>
+          </select>
+        </div>
 
-        <label for="searchLocation">Location:</label>
-        <select id="searchLocation" v-model="searchLocation">
-          <option />
-          <option
-            v-for="location in locations"
-            :key="location.id"
-            :value="location"
-          >
-            {{ location.name }}
-          </option>
-        </select>
+  <!--      Date-->
+        <div>
+          <label for="searchDateStart">Start-Date:</label>
+          <input
+            id="searchDateStart"
+            type="date"
+            v-model="searchDateStart"
+          />
+        </div>
+
+        <div>
+          <label for="searchDateEnd">End-Date:</label>
+          <input id="searchDateEnd" type="date" v-model="searchDateEnd" />
+        </div>
+
+        <div>
+          <label for="searchRating">Rating: </label>
+          <select name="searchRating" id="searchRating" v-model.number="searchRating">
+            <option v-for="rating in [1, 2, 3, 4, 5]" :key="rating" :value="rating">
+              {{ rating }}
+            </option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="
+            py-2 px-3 px-6 text-white bg-green-500 hover:bg-green-700 inline-block rounded
+          ">
+          Submit
+        </button>
       </div>
-
-<!--      Date-->
-      <div>
-        <label for="searchDateStart">Start-Date:</label>
-        <input
-          id="searchDateStart"
-          type="date"
-          v-model="searchDateStart"
-        />
-      </div>
-
-      <div>
-        <label for="searchDateEnd">End-Date:</label>
-        <input id="searchDateEnd" type="date" v-model="searchDateEnd" />
-      </div>
-
-      <div>
-        <label for="searchRating"></label>
-        <select name="searchRating" id="searchRating" v-model.number="searchRating">
-          <option v-for="rating in [1, 2, 3, 4, 5]" :key="rating" :value="rating">
-            {{ rating }}
-          </option>
-        </select>
-      </div>
-
-      <button
-        type="submit"
-        class="py-2 px-3 mt-4 px-6 text-white bg-green-500 hover:bg-green-700 inline-block rounded">
-        Submit
-      </button>
     </fieldset>
   </form>
 </template>
@@ -165,9 +168,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-input {
+input, select {
   @apply border-gray-400;
   border: 1px solid;
   border-radius: 3px;
+  padding: 4px 10px !important;
+}
+
+label + input,
+label + select {
+  margin-left: 10px;
 }
 </style>

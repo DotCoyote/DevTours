@@ -1,23 +1,28 @@
 <template>
   <div class="page">
     <search-input />
-    <search-results :items="availabilities" />
+
+    <template v-if="availabilities.length">
+      <search-filters />
+      <search-results :items="availabilities" />
+    </template>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
-import SearchInput from '@/components/molecules/SearchInput.vue';
-import SearchResults from '@/components/organisms/SearchResults.vue';
+import { defineComponent, defineAsyncComponent, computed } from 'vue';
 import { useStore } from '@/store';
 import { GetterTypes } from '@/store/types';
+
+import SearchInput from '@/components/molecules/SearchInput.vue';
 
 export default defineComponent({
   name: 'SearchPage',
 
   components: {
     SearchInput,
-    SearchResults,
+    SearchResults: defineAsyncComponent(() => import('@/components/organisms/SearchResults.vue')),
+    SearchFilters: defineAsyncComponent(() => import('@/components/molecules/SearchFilters.vue')),
   },
 
   setup() {

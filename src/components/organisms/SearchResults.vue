@@ -2,7 +2,7 @@
   <div class="mt-6">
     <div class="hotel-list">
       <hotel-list-item
-        v-for="item in items"
+        v-for="item in hotelItems"
         :key="item.id"
         :hotel-data="item"
       />
@@ -11,9 +11,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+/* eslint-disable */
+import { defineComponent, computed, watch, ref } from 'vue';
 import { Hotel } from '@/typings/hotel.types';
 import HotelListItem from '@/components/molecules/HotelListItem.vue';
+import { useStore } from '@/store';
+import {FilterValues, GetterTypes} from '@/store/types';
 
 export default defineComponent({
   components: {
@@ -25,6 +28,32 @@ export default defineComponent({
       type: Array as () => Hotel[],
       default: () => [],
     },
+  },
+
+  setup(props) {
+    const store = useStore();
+    const filterValues = computed(() => store.getters[GetterTypes.GET_FILTER_VALUES]);
+    const hotelItems = ref<Hotel[]>(props.items);
+
+    function setHotelItems(filters: FilterValues) {
+      hotelItems.value = props.items.filter(
+        (hotel: Hotel) => {
+          console.log(filters)
+          return !filters.breakfastIncluded || (
+            !!filters.breakfastIncluded && !!hotel.amenities.breakfast_included
+          )
+        }
+      )
+    }
+
+    watch(() => filterValues.value, (newVal) => {
+      console.log(newVal)
+      setHotelItems(newVal)
+    })
+
+    return {
+      hotelItems,
+    };
   },
 });
 </script>
