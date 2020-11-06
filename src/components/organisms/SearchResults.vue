@@ -5,6 +5,8 @@
         v-for="item in hotelItems"
         :key="item.id"
         :hotel-data="item"
+        :filter-data="filterValues"
+        :search-data="searchValues"
       />
     </div>
   </div>
@@ -25,7 +27,7 @@ export default defineComponent({
   },
 
   props: {
-    items: {
+    availabilities: {
       type: Array as () => Hotel[],
       default: () => [],
     },
@@ -34,10 +36,11 @@ export default defineComponent({
   setup(props) {
     const store = useStore();
     const filterValues = computed(() => store.getters[GetterTypes.GET_FILTER_VALUES]);
-    const hotelItems = ref<Hotel[]>(props.items);
+    const searchValues = computed(() => store.getters[GetterTypes.GET_SEARCH_VALUES]);
+    const hotelItems = ref<Hotel[]>(props.availabilities);
 
     function setHotelItems(filters: FilterValues) {
-      hotelItems.value = props.items.filter(
+      hotelItems.value = props.availabilities.filter(
         (hotel: Hotel) => (
           !filters.breakfastIncluded
             || (filters.breakfastIncluded && hotel.amenities.breakfast_included)
@@ -57,6 +60,8 @@ export default defineComponent({
 
     return {
       hotelItems,
+      filterValues,
+      searchValues,
     };
   },
 });

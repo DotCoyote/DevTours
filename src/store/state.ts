@@ -10,6 +10,7 @@ export const state = {
     top: 99,
     rating: 0,
   },
+  hotels: [],
   availabilities: [],
   filterValues: {
     minPrice: 0,
@@ -18,4 +19,5 @@ export const state = {
     freeCancellation: false,
     breakfastIncluded: false,
   },
+  selectedOffer: null,
 };

@@ -58,9 +58,15 @@
             <button
               type="submit"
               class="
-                py-2 px-3 px-6 text-white bg-green-500 hover:bg-green-700 inline-block rounded
-              ">
-              Submit
+                py-2 px-3 px-6 text-white  inline-block rounded
+              "
+              :class="{
+                'bg-green-500 hover:bg-green-700': !loading,
+                'bg-green-300 cursor-not-allowed': loading,
+              }"
+              :disabled="loading"
+            >
+              {{ loading ? 'Loading...' : 'Submit' }}
             </button>
           </div>
         </div>
@@ -79,6 +85,8 @@ import { useStore } from '@/store';
 import { ActionTypes, GetterTypes } from '@/store/types';
 import Loading from '@/components/atoms/Loading.vue';
 import { APIRoutes } from '@/typings/api.types';
+import { AvailabilitiesPaginatedModel, AvailabilityShortenedModel } from '@/typings/availability.types';
+import { Hotel } from '@/typings/hotel.types';
 
 export default defineComponent({
   components: {
@@ -87,7 +95,7 @@ export default defineComponent({
   },
 
   setup() {
-    const { fetchApi } = useApi();
+    const { fetchApi, getHotelData } = useApi();
     const store = useStore();
 
     const searchLocation = ref<Location | null>(null);
@@ -96,18 +104,39 @@ export default defineComponent({
     const searchRating = ref<number>(1);
     const locations = ref<Location[] | null>(null);
     const errorMessage = ref<string | null>(null);
+    const loading = ref<boolean>(false);
+
+    async function getHotelsToRooms(availabilities: AvailabilityShortenedModel[]) {
+      const hotelIds = availabilities.reduce(
+        (allIds: string[], currentAvailability: AvailabilityShortenedModel) => {
+          if (!(currentAvailability.hotelId in allIds)) {
+            allIds.push(currentAvailability.hotelId);
+          }
+
+          return allIds;
+        }, [],
+      );
+      const requests: Promise<any>[] = [];
+
+      hotelIds.forEach((id) => {
+        requests.push(getHotelData(id));
+      });
+
+      const hotelDatas = await Promise.all(requests);
+
+      store.dispatch(
+        ActionTypes.STORE_HOTELS, hotelDatas as Hotel[],
+      );
+    }
 
     async function submitForm() {
       errorMessage.value = null;
 
       try {
-        if (!searchLocation.value) {
-          errorMessage.value = 'No location selected!';
-          return;
-        }
+        loading.value = true;
 
         const params = {
-          location: searchLocation.value.id,
+          location: searchLocation.value?.id || '',
           startDate: new Date(searchDateStart.value).toISOString(),
           endDate: new Date(searchDateEnd.value).toISOString(),
           skip: 0,
@@ -115,7 +144,7 @@ export default defineComponent({
           rating: searchRating.value,
         };
 
-        const response = await fetchApi(APIRoutes.GET_HOTELS, {
+        const response = await fetchApi(APIRoutes.GET_AVAILABILITIES, {
           params,
         });
 
@@ -127,12 +156,18 @@ export default defineComponent({
         });
 
         if (response?.data) {
-          store.dispatch(ActionTypes.STORE_AVAILABILITIES, response.data);
+          store.dispatch(
+            ActionTypes.STORE_AVAILABILITIES, response.data as AvailabilitiesPaginatedModel,
+          );
+
+          getHotelsToRooms(response.data.items);
         }
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error(e);
         errorMessage.value = e.message;
+      } finally {
+        loading.value = false;
       }
     }
 
@@ -174,6 +209,7 @@ export default defineComponent({
       searchDateEnd,
       searchRating,
       submitForm,
+      loading,
     };
   },
 });

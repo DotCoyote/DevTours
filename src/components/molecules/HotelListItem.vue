@@ -3,7 +3,11 @@
     :to="{
       name: 'HotelDetails',
       params: {
-        id: hotelData.id
+        id: hotelData.id,
+      },
+      query: {
+        ...searchData,
+        ...filterData,
       }
     }"
     class="bg-gray-200 rounded"
@@ -29,6 +33,14 @@ export default defineComponent({
   props: {
     hotelData: {
       type: Object as () => Hotel,
+      default: () => ({}),
+    },
+    searchData: {
+      type: Object,
+      default: () => ({}),
+    },
+    filterData: {
+      type: Object,
       default: () => ({}),
     },
   },

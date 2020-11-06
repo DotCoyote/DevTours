@@ -30,7 +30,11 @@
           </div>
 
           <!--      Choose room-->
-          <form @submit.prevent="bookRoom" class="mt-16">
+          <form
+            v-if="availableRooms && availableRooms.count > 0"
+            @submit.prevent="bookRoom"
+            class="mt-16"
+          >
             <div>
               <label for="roomSelection">Select room:</label>
             </div>
@@ -40,8 +44,13 @@
               id="roomSelection"
             >
               <option :value="null" />
-              <option v-for="room in hotelData.rooms" :key="room.id" :value="room">
-                {{room.name}}
+              <option
+                v-for="availability in availableRooms.items"
+                :key="availability.offer.id"
+                :value="availability"
+              >
+                {{ availability.room.name }} ({{ availability.offer.line_items.final_price.amount }}
+                {{ availability.offer.line_items.final_price.currency }})
               </option>
             </select>
 
@@ -60,6 +69,7 @@
               Book selection
             </button>
           </form>
+          <div v-else class="text-red-700">No rooms available for your selection.</div>
         </div>
       </div>
 
@@ -70,14 +80,17 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, onMounted, defineAsyncComponent,
+  defineComponent, ref, onMounted, defineAsyncComponent, reactive,
 } from 'vue';
 import router from '@/router';
 import { useApi } from '@/utils/api';
 import { Hotel, HotelRoom } from '@/typings/hotel.types';
 import Loading from '@/components/atoms/Loading.vue';
 import { useStore } from '@/store';
-import { GetterTypes } from '@/store/types';
+import { ActionTypes, GetterTypes } from '@/store/types';
+import { getCurrentDate, getNextWeek } from '@/utils/date';
+import { AvailabilityShortenedModel } from '@/typings/availability.types';
+import { APIRoutes } from '@/typings/api.types';
 
 export default defineComponent({
   name: 'hotel-details',
@@ -89,23 +102,26 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
-    const { getHotelData } = useApi();
+    const { getHotelData, fetchApi } = useApi();
     const hotelData = ref<Hotel | null>(null);
     const errorMessage = ref('');
-    const roomSelection = ref<HotelRoom | null>(null);
+    const roomSelection = ref<AvailabilityShortenedModel | null>(null);
+    const availableRooms = ref<AvailabilityShortenedModel[] | null>(null);
+
+    const searchValues = reactive({
+      startDate: router.currentRoute.value.query.startDate || getCurrentDate(),
+      endDate: router.currentRoute.value.query.endDate || getNextWeek(),
+      skip: 0,
+      top: 999,
+      hotelId: router.currentRoute.value.params.id,
+    });
 
     function bookRoom() {
       if (!roomSelection.value || !hotelData.value) return;
 
-      router.push({
-        name: 'Booking',
-        query: {
-          roomId: roomSelection.value.id,
-          hotelId: hotelData.value.id,
-          startDate: store.getters[GetterTypes.GET_SEARCH_VALUES].startDate,
-          endDate: store.getters[GetterTypes.GET_SEARCH_VALUES].endDate,
-        },
-      });
+      store.dispatch(ActionTypes.STORE_SELECTED_OFFER, roomSelection.value);
+
+      router.push({ name: 'Booking' });
     }
 
     onMounted(async () => {
@@ -113,7 +129,18 @@ export default defineComponent({
         router.push('/');
       }
 
-      hotelData.value = await getHotelData(router.currentRoute.value.params.id as string);
+      hotelData.value = store.getters[GetterTypes.GET_HOTEL_BY_ID](
+        router.currentRoute.value.params.id,
+      )
+        || await getHotelData(router.currentRoute.value.params.id as string);
+
+      const availableRoomsResponse = await fetchApi(APIRoutes.GET_AVAILABILITIES, {
+        params: searchValues,
+      });
+
+      if (availableRoomsResponse?.data) {
+        availableRooms.value = availableRoomsResponse.data;
+      }
     });
 
     return {
@@ -121,6 +148,7 @@ export default defineComponent({
       roomSelection,
       errorMessage,
       hotelData,
+      availableRooms,
     };
   },
 });

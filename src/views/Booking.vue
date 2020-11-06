@@ -2,7 +2,7 @@
   <div class="h-screen flex flex-row justify-center items-center bg-gray-100">
     <!-- component -->
     <form
-      v-if="hotelData"
+      v-if="!loading"
       class="
         container max-w-md mx-auto xl:max-w-3xl flex flex-row items-stretch bg-white
         rounded-lg shadow overflow-hidden
@@ -33,7 +33,7 @@
               Selected Room:
             </span>
               <span class="text-gray-700 text-sm">
-              {{ roomData.name }}
+              {{ selectedOffer.room.name }}
             </span>
           </div>
           <div>
@@ -52,6 +52,63 @@
               {{ endDate }}
             </span>
           </div>
+
+<!--          Price Block-->
+
+          <div class="border-t mt-3 pt-3 border-solid border-gray-600 flex space-between">
+            <span class="text-gray-600 text-sm font-semibold block flex-grow">
+              Length of stay:
+            </span>
+              <span class="text-gray-700 text-sm block">
+              {{ selectedOffer.availability.length_of_stay }} Nights
+            </span>
+          </div>
+          <div class="flex space-between">
+            <span class="text-gray-600 text-sm font-semibold block flex-grow">
+              Price per Night:
+            </span>
+              <span class="text-gray-700 text-sm">
+              {{ selectedOffer.availability.price_per_night.amount }}
+              {{ selectedOffer.availability.price_per_night.currency }}
+            </span>
+          </div>
+          <div class="flex space-between">
+            <span class="text-gray-600 text-sm font-semibold block flex-grow">
+              City tax:
+            </span>
+              <span class="text-gray-700 text-sm">
+              {{ selectedOffer.offer.line_items.city_tax.amount }}
+              {{ selectedOffer.offer.line_items.city_tax.currency }}
+            </span>
+          </div>
+          <div class="flex space-between">
+            <span class="text-gray-600 text-sm font-semibold block flex-grow">
+              Gross price:
+            </span>
+              <span class="text-gray-700 text-sm">
+              {{ selectedOffer.offer.line_items.gross_price.amount }}
+              {{ selectedOffer.offer.line_items.gross_price.currency }}
+            </span>
+          </div>
+          <div class="flex space-between">
+            <span class="text-gray-600 text-sm font-semibold block flex-grow">
+              VAT:
+            </span>
+              <span class="text-gray-700 text-sm">
+              {{ selectedOffer.offer.line_items.vat.amount }}
+              {{ selectedOffer.offer.line_items.vat.currency }}
+            </span>
+          </div>
+          <div class="flex space-between border-t-2 border-solid border-gray-600 mt-3 pt-3">
+            <span class="text-gray-600 text-sm font-semibold block flex-grow">
+              Final Price:
+            </span>
+              <span class="text-gray-700 font-bold">
+              {{ selectedOffer.offer.line_items.final_price.amount }}
+              {{ selectedOffer.offer.line_items.final_price.currency }}
+            </span>
+          </div>
+
         </div>
 
         <div class="mb-4 mt-6">
@@ -140,7 +197,7 @@ import { Hotel, HotelRoom } from '@/typings/hotel.types';
 import { useApi } from '@/utils/api';
 import Loading from '@/components/atoms/Loading.vue';
 import { useStore } from '@/store';
-import { GetterTypes } from '@/store/types';
+import { ActionTypes, GetterTypes } from '@/store/types';
 
 export default defineComponent({
   components: {
@@ -149,15 +206,20 @@ export default defineComponent({
 
   setup() {
     const store = useStore();
+
+    const selectedOffer = computed(() => store.getters[GetterTypes.GET_SELECTED_OFFER]);
+
     const startDate = computed(
       () => new Date(store.getters[GetterTypes.GET_SEARCH_VALUES].startDate).toLocaleDateString(),
     );
     const endDate = computed(
       () => new Date(store.getters[GetterTypes.GET_SEARCH_VALUES].endDate).toLocaleDateString(),
     );
+
     const { getHotelData } = useApi();
+
+    const loading = ref<boolean>(true);
     const hotelData = ref<Hotel | null>(null);
-    const roomData = ref<HotelRoom | null>(null);
     const formData = reactive({
       email: '',
       firstName: '',
@@ -168,23 +230,23 @@ export default defineComponent({
 
     function submitForm() {
       console.log(formData);
+      store.dispatch(ActionTypes.STORE_SELECTED_OFFER, null);
+
+      router.push('/');
     }
 
     async function getBookingInformation() {
-      if (!router.currentRoute.value.query.roomId || !router.currentRoute.value.query.hotelId) {
+      if (!selectedOffer.value) {
         router.push('/');
       }
 
-      hotelData.value = await getHotelData(router.currentRoute.value.query.hotelId as string);
+      console.log(selectedOffer.value);
 
-      if (hotelData.value) {
-        roomData.value = hotelData.value.rooms.find(
-          (room: HotelRoom) => room.id === router.currentRoute.value.query.roomId,
-        ) || null;
+      hotelData.value = store.getters[GetterTypes.GET_HOTEL_BY_ID](
+        selectedOffer.value.hotelId,
+      ) || await getHotelData(selectedOffer.value.hotelId);
 
-        formData.hotelId = hotelData.value.id;
-        formData.roomId = roomData.value?.id || '';
-      }
+      loading.value = false;
     }
 
     onMounted(async () => {
@@ -193,11 +255,12 @@ export default defineComponent({
 
     return {
       hotelData,
-      roomData,
       submitForm,
       formData,
       startDate,
       endDate,
+      loading,
+      selectedOffer,
     };
   },
 });
