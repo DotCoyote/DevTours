@@ -1,6 +1,7 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from 'axios';
 import { URL as baseURL } from '@/consts/api.consts';
 import { ApiResponse, APIRoutes } from '@/typings/api.types';
+import { Hotel } from '@/typings/hotel.types';
 
 const cancelTokens: { [key: string]: any } = {};
 
@@ -75,6 +76,10 @@ export function useApi() {
         response = get('/api/Availabilities', params) as any;
         break;
 
+      case APIRoutes.GET_HOTEL_DATA:
+        response = get(`/api/Hotel/${params.id}`) as any;
+        break;
+
       // ====================================
       //       DEFAULT: Rejected Promise
       // ====================================
@@ -86,7 +91,24 @@ export function useApi() {
     return response;
   }
 
+  async function getHotelData(hotelId: string): Promise<Hotel | null> {
+    try {
+      const response = await fetchApi(APIRoutes.GET_HOTEL_DATA, { id: hotelId });
+
+      // @ts-ignore
+      if (response?.data) {
+        // @ts-ignore
+        return response.data as Hotel;
+      }
+      return null;
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  }
+
   return {
     fetchApi,
+    getHotelData,
   };
 }

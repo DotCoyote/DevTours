@@ -6,6 +6,7 @@ export enum APIRoutes {
   GET_HOTELS = 'getHotels',
   GET_LOCATIONS = 'getLocations',
   GET_AVAILABILITIES = 'getAvailabilities',
+  GET_HOTEL_DATA = 'getHotelData',
 }
 
 export interface SearchParams {

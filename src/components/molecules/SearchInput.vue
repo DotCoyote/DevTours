@@ -166,17 +166,3 @@ export default defineComponent({
 });
 
 </script>
-
-<style lang="scss">
-input, select {
-  @apply border-gray-400;
-  border: 1px solid;
-  border-radius: 3px;
-  padding: 4px 10px !important;
-}
-
-label + input,
-label + select {
-  margin-left: 10px;
-}
-</style>

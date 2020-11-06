@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <app-header />
-    <router-view class="container mx-auto mt-4" />
+    <router-view />
   </div>
 </template>
 
@@ -21,7 +21,6 @@ export default defineComponent({
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 

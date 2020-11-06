@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page container mx-auto mt-4">
     <search-page />
   </div>
 </template>

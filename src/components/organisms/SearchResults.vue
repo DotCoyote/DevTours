@@ -38,10 +38,16 @@ export default defineComponent({
     function setHotelItems(filters: FilterValues) {
       hotelItems.value = props.items.filter(
         (hotel: Hotel) => {
-          console.log(filters)
-          return !filters.breakfastIncluded || (
-            !!filters.breakfastIncluded && !!hotel.amenities.breakfast_included
-          )
+          return (
+            !filters.breakfastIncluded ||
+            (filters.breakfastIncluded && hotel.amenities.breakfast_included)
+          ) &&
+            (!filters.freeWifi ||
+              (filters.freeWifi && hotel.amenities.free_wifi)
+            ) &&
+            (!filters.freeCancellation ||
+              (filters.freeCancellation && hotel.amenities.free_cancellation)
+            )
         }
       )
     }
