@@ -36,6 +36,22 @@
               {{ roomData.name }}
             </span>
           </div>
+          <div>
+            <span class="text-gray-600 text-sm font-semibold">
+              Start-Date:
+            </span>
+              <span class="text-gray-700 text-sm">
+              {{ startDate }}
+            </span>
+          </div>
+          <div>
+            <span class="text-gray-600 text-sm font-semibold">
+              End-Date:
+            </span>
+              <span class="text-gray-700 text-sm">
+              {{ endDate }}
+            </span>
+          </div>
         </div>
 
         <div class="mb-4 mt-6">
@@ -117,12 +133,14 @@
 
 <script lang="ts">
 import {
-  defineComponent, onMounted, ref, reactive,
+  defineComponent, onMounted, ref, reactive, computed,
 } from 'vue';
 import router from '@/router';
 import { Hotel, HotelRoom } from '@/typings/hotel.types';
 import { useApi } from '@/utils/api';
 import Loading from '@/components/atoms/Loading.vue';
+import { useStore } from '@/store';
+import { GetterTypes } from '@/store/types';
 
 export default defineComponent({
   components: {
@@ -130,6 +148,13 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useStore();
+    const startDate = computed(
+      () => new Date(store.getters[GetterTypes.GET_SEARCH_VALUES].startDate).toLocaleDateString(),
+    );
+    const endDate = computed(
+      () => new Date(store.getters[GetterTypes.GET_SEARCH_VALUES].endDate).toLocaleDateString(),
+    );
     const { getHotelData } = useApi();
     const hotelData = ref<Hotel | null>(null);
     const roomData = ref<HotelRoom | null>(null);
@@ -171,6 +196,8 @@ export default defineComponent({
       roomData,
       submitForm,
       formData,
+      startDate,
+      endDate,
     };
   },
 });

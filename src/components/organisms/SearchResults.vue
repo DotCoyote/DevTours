@@ -53,7 +53,6 @@ export default defineComponent({
     }
 
     watch(() => filterValues.value, (newVal) => {
-      console.log(newVal)
       setHotelItems(newVal)
     })
 

@@ -76,6 +76,8 @@ import router from '@/router';
 import { useApi } from '@/utils/api';
 import { Hotel, HotelRoom } from '@/typings/hotel.types';
 import Loading from '@/components/atoms/Loading.vue';
+import { useStore } from '@/store';
+import { GetterTypes } from '@/store/types';
 
 export default defineComponent({
   name: 'hotel-details',
@@ -86,6 +88,7 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useStore();
     const { getHotelData } = useApi();
     const hotelData = ref<Hotel | null>(null);
     const errorMessage = ref('');
@@ -99,6 +102,8 @@ export default defineComponent({
         query: {
           roomId: roomSelection.value.id,
           hotelId: hotelData.value.id,
+          startDate: store.getters[GetterTypes.GET_SEARCH_VALUES].startDate,
+          endDate: store.getters[GetterTypes.GET_SEARCH_VALUES].endDate,
         },
       });
     }

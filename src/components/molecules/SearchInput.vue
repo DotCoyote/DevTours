@@ -126,10 +126,10 @@ export default defineComponent({
         });
 
         if (response?.data) {
-          console.log(response.data);
           store.dispatch(ActionTypes.STORE_AVAILABILITIES, response.data);
         }
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error(e);
         errorMessage.value = e.message;
       }
@@ -146,14 +146,13 @@ export default defineComponent({
           locations.value = locationsResponse.data as Location[];
         }
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error(e);
       }
     }
 
     function syncSearchParamsFromStore() {
       const storedSearchParams = store.getters[GetterTypes.GET_SEARCH_VALUES];
-
-      console.log(storedSearchParams);
 
       searchLocation.value = storedSearchParams.location;
       searchRating.value = storedSearchParams.rating;
