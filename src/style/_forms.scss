@@ -9,3 +9,57 @@ label + input,
 label + select {
   margin-left: 10px;
 }
+
+.field-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+
+  @screen xl {
+    width: auto;
+  }
+
+  + .field-row {
+    margin-top: 10px;
+
+    @screen xl {
+      margin-top: 0;
+    }
+  }
+
+  label {
+    display: inline-block;
+    width: calc(100% / 3);
+
+    @screen xl {
+      width: auto;
+    }
+
+    &.checkLabel {
+      width: 100%;
+      padding-top: 10px;
+      padding-left: calc((100% / 3) + 10px);
+
+      @screen xl {
+        width: auto;
+        padding-top: 0;
+        padding-left: 0;
+      }
+    }
+  }
+
+  select, input {
+    display: inline-block;
+    flex-grow: 1;
+    width: calc((100% / 3) * 2);
+
+    @screen xl {
+      width: auto;
+    }
+
+    &[type="checkbox"] {
+      width: auto;
+    }
+  }
+}

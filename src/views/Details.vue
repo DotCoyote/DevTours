@@ -1,27 +1,43 @@
 <template>
   <!-- component -->
-  <div class="flex flex-wrap md items-center h-screen">
+  <div
+    class="flex flex-wrap items-center xl:h-screen"
+    :class="{
+      'md:flex-row-reverse': hotelData
+    }"
+  >
     <template v-if="hotelData">
+      <div class="bg-gray-200 w-full h-64 md:w-1/2 md:h-screen">
+        <img
+          :src="hotelData.images[0].hires"
+          class="h-full w-full object-cover"
+          alt=""
+        />
+      </div>
       <div class="bg-white w-full md:w-1/2 h-screen">
         <div class="mx-12 my-8 xl:mx-32">
           <alert v-if="errorMessage" type="error">{{ errorMessage }}</alert>
 
           <router-link to="/">&larr; back</router-link>
 
-          <h1 class="text-6xl font-bold mt-8">{{ hotelData.name }}</h1>
+          <h1 class="text-3xl md:text-4xl xl:text-6xl font-bold mt-8">{{ hotelData.name }}</h1>
 
           <!-- description -->
           <div
-            class="description w-full sm: md:w-2/3 mt-10 text-gray-800 text-sm"
+            class="description w-full md:w-2/3 mt-10 text-gray-800 md:text-sm"
           >
             {{ hotelData.description }}
           </div>
 
           <!--      Choose room-->
           <form @submit.prevent="bookRoom" class="mt-16">
-            <label for="roomSelection">Select room:</label>
+            <div>
+              <label for="roomSelection">Select room:</label>
+            </div>
             <select
-              name="roomSelection" id="roomSelection" v-model="roomSelection"
+              v-model="roomSelection"
+              name="roomSelection"
+              id="roomSelection"
             >
               <option :value="null" />
               <option v-for="room in hotelData.rooms" :key="room.id" :value="room">
@@ -35,20 +51,16 @@
                 'bg-green-500': roomSelection,
                 'bg-green-300 cursor-not-allowed': !roomSelection,
               }"
-              class="py-2 px-3 ml-4 px-6 text-white  inline-block rounded"
+              class="
+                py-2 px-3 mt-2 lg:mt-0 sm:ml-4 md:ml-0 lg:ml-4 px-6 text-white
+                inline-block rounded
+              "
               type="submit"
             >
               Book selection
             </button>
           </form>
         </div>
-      </div>
-      <div class="bg-gray-200 w-full md:w-1/2 h-screen">
-        <img
-          :src="hotelData.images[0].hires"
-          class="h-full w-full object-cover"
-          alt=""
-        />
       </div>
 
     </template>

@@ -11,11 +11,14 @@
       <fieldset>
         <legend class="text-2xl">Hotel Search</legend>
 
-        <div class="flex flex-row justify-between items-center">
+        <div class="flex flex-row flex-wrap justify-between items-center mt-6 xl:mt-0">
           <!--      Location-->
-          <div>
+          <div class="field-row">
             <label for="searchLocation">Location:</label>
-            <select id="searchLocation" v-model="searchLocation">
+            <select
+              v-model="searchLocation"
+              id="searchLocation"
+            >
               <option />
               <option
                 v-for="location in locations"
@@ -28,7 +31,7 @@
           </div>
 
     <!--      Date-->
-          <div>
+          <div class="field-row">
             <label for="searchDateStart">Start-Date:</label>
             <input
               id="searchDateStart"
@@ -37,12 +40,12 @@
             />
           </div>
 
-          <div>
+          <div class="field-row">
             <label for="searchDateEnd">End-Date:</label>
             <input id="searchDateEnd" type="date" v-model="searchDateEnd" />
           </div>
 
-          <div>
+          <div class="field-row">
             <label for="searchRating">Rating: </label>
             <select name="searchRating" id="searchRating" v-model.number="searchRating">
               <option v-for="rating in [1, 2, 3, 4, 5]" :key="rating" :value="rating">
@@ -51,13 +54,15 @@
             </select>
           </div>
 
-          <button
-            type="submit"
-            class="
-              py-2 px-3 px-6 text-white bg-green-500 hover:bg-green-700 inline-block rounded
-            ">
-            Submit
-          </button>
+          <div class="w-full mt-4 xl:mt-0 xl:w-auto text-right">
+            <button
+              type="submit"
+              class="
+                py-2 px-3 px-6 text-white bg-green-500 hover:bg-green-700 inline-block rounded
+              ">
+              Submit
+            </button>
+          </div>
         </div>
       </fieldset>
     </form>
@@ -73,6 +78,7 @@ import { Location } from '@/typings/location.types';
 import { useStore } from '@/store';
 import { ActionTypes, GetterTypes } from '@/store/types';
 import Loading from '@/components/atoms/Loading.vue';
+import { APIRoutes } from '@/typings/api.types';
 
 export default defineComponent({
   components: {
@@ -108,7 +114,7 @@ export default defineComponent({
           rating: searchRating.value,
         };
 
-        const response = await fetchApi('getHotels', {
+        const response = await fetchApi(APIRoutes.GET_HOTELS, {
           params,
         });
 
@@ -120,6 +126,7 @@ export default defineComponent({
         });
 
         if (response?.data) {
+          console.log(response.data);
           store.dispatch(ActionTypes.STORE_AVAILABILITIES, response.data);
         }
       } catch (e) {

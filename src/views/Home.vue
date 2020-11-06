@@ -1,11 +1,17 @@
 <template>
   <div class="page container mx-auto mt-4">
-    <search-input />
 
-    <template v-if="availabilities.length">
-      <search-filters />
-      <search-results :items="availabilities" />
-    </template>
+    <div class="lg:flex lg:flex-row xl:flex-wrap">
+      <search-input
+        class="lg:w-1/2 lg:mt-0 xl:w-full"
+      />
+      <search-filters
+        v-if="availabilities.length"
+        class="mt-6 lg:w-1/2 lg:ml-4 lg:mt-0 xl:mt-6 xl:ml-0 xl:w-full"
+      />
+    </div>
+
+    <search-results v-if="availabilities.length" :items="availabilities" />
   </div>
 </template>
 

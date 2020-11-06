@@ -68,6 +68,11 @@ export default defineComponent({
 .hotel-list {
   display: grid;
   grid-gap: 30px;
+  grid-template-columns: 1fr;
+
+  @screen md {
+    grid-template-columns: 1fr 1fr;
+  }
 
   @screen xl {
     grid-template-columns: 1fr 1fr 1fr;
