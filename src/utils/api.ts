@@ -52,12 +52,11 @@ export function useApi() {
     return (res as ApiResponse);
   }
 
-  function fetchApi(route: string, params?: any): AxiosPromise<void> | null {
-    let response: AxiosPromise<void> | null = null;
+  function fetchApi(route: string, params?: any): AxiosPromise | null {
+    let response: AxiosPromise | null;
 
     const errorPromise = () => new Promise((resolve, reject) => {
       reject(Error(`Route '${route}' not found!`));
-      resolve(); // only for linter
     });
 
     switch (route) {
@@ -95,9 +94,7 @@ export function useApi() {
     try {
       const response = await fetchApi(APIRoutes.GET_HOTEL_DATA, { id: hotelId });
 
-      // @ts-ignore
       if (response?.data) {
-        // @ts-ignore
         return response.data as Hotel;
       }
       return null;

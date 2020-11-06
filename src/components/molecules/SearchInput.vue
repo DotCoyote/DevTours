@@ -102,7 +102,8 @@ export default defineComponent({
 
       try {
         if (!searchLocation.value) {
-          throw Error('No location selected!');
+          errorMessage.value = 'No location selected!';
+          return;
         }
 
         const params = {

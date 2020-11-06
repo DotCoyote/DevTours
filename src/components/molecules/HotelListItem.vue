@@ -9,7 +9,7 @@
     class="bg-gray-200 rounded"
   >
     <div class="h-56 overflow-hidden object-cover rounded-tr rounded-tl">
-      <img :src="hotelData.images[0].lowres" class="">
+      <img :src="hotelData.images[0].lowres" :alt="hotelData.name">
     </div>
     <div class="p-5">
       <h1 class="text-2xl font-bold text-green-800 py-2">{{ hotelData.name }}</h1>

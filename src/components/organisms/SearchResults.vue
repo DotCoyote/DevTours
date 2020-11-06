@@ -11,12 +11,13 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable */
-import { defineComponent, computed, watch, ref } from 'vue';
+import {
+  defineComponent, computed, watch, ref,
+} from 'vue';
 import { Hotel } from '@/typings/hotel.types';
 import HotelListItem from '@/components/molecules/HotelListItem.vue';
 import { useStore } from '@/store';
-import {FilterValues, GetterTypes} from '@/store/types';
+import { FilterValues, GetterTypes } from '@/store/types';
 
 export default defineComponent({
   components: {
@@ -37,24 +38,22 @@ export default defineComponent({
 
     function setHotelItems(filters: FilterValues) {
       hotelItems.value = props.items.filter(
-        (hotel: Hotel) => {
-          return (
-            !filters.breakfastIncluded ||
-            (filters.breakfastIncluded && hotel.amenities.breakfast_included)
-          ) &&
-            (!filters.freeWifi ||
-              (filters.freeWifi && hotel.amenities.free_wifi)
-            ) &&
-            (!filters.freeCancellation ||
-              (filters.freeCancellation && hotel.amenities.free_cancellation)
+        (hotel: Hotel) => (
+          !filters.breakfastIncluded
+            || (filters.breakfastIncluded && hotel.amenities.breakfast_included)
+        )
+            && (!filters.freeWifi
+              || (filters.freeWifi && hotel.amenities.free_wifi)
             )
-        }
-      )
+            && (!filters.freeCancellation
+              || (filters.freeCancellation && hotel.amenities.free_cancellation)
+            ),
+      );
     }
 
     watch(() => filterValues.value, (newVal) => {
-      setHotelItems(newVal)
-    })
+      setHotelItems(newVal);
+    });
 
     return {
       hotelItems,
