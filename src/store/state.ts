@@ -11,7 +11,7 @@ export const state = {
     rating: 0,
   },
   hotels: [],
-  availabilities: [],
+  availabilities: null,
   filterValues: {
     minPrice: 0,
     maxPrice: 9999,

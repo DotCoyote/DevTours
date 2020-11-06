@@ -84,7 +84,7 @@ import {
 } from 'vue';
 import router from '@/router';
 import { useApi } from '@/utils/api';
-import { Hotel, HotelRoom } from '@/typings/hotel.types';
+import { Hotel } from '@/typings/hotel.types';
 import Loading from '@/components/atoms/Loading.vue';
 import { useStore } from '@/store';
 import { ActionTypes, GetterTypes } from '@/store/types';

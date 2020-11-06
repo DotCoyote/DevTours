@@ -15,7 +15,7 @@ export interface FilterValues {
 
 export interface AppState {
   searchValues: SearchParams;
-  availabilities: AvailabilitiesPaginatedModel[];
+  availabilities: AvailabilitiesPaginatedModel | null;
   filterValues: FilterValues;
   hotels: Hotel[];
   selectedOffer: AvailabilityShortenedModel | null;
@@ -44,4 +44,5 @@ export enum GetterTypes {
   GET_HOTELS = 'GET_HOTELS',
   GET_HOTEL_BY_ID = 'GET_HOTEL_BY_ID',
   GET_SELECTED_OFFER = 'GET_SELECTED_OFFER',
+  GET_AVAILABILITIES_COUNT = 'GET_AVAILABILITIES_COUNT',
 }

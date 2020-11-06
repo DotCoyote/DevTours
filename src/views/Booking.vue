@@ -193,7 +193,7 @@ import {
   defineComponent, onMounted, ref, reactive, computed,
 } from 'vue';
 import router from '@/router';
-import { Hotel, HotelRoom } from '@/typings/hotel.types';
+import { Hotel } from '@/typings/hotel.types';
 import { useApi } from '@/utils/api';
 import Loading from '@/components/atoms/Loading.vue';
 import { useStore } from '@/store';
@@ -239,8 +239,6 @@ export default defineComponent({
       if (!selectedOffer.value) {
         router.push('/');
       }
-
-      console.log(selectedOffer.value);
 
       hotelData.value = store.getters[GetterTypes.GET_HOTEL_BY_ID](
         selectedOffer.value.hotelId,

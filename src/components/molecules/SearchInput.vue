@@ -106,6 +106,18 @@ export default defineComponent({
     const errorMessage = ref<string | null>(null);
     const loading = ref<boolean>(false);
 
+    function sortByName(itemA: Location, itemB: Location) {
+      const nameA = itemA.name.toUpperCase();
+      const nameB = itemB.name.toUpperCase();
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    }
+
     async function getHotelsToRooms(availabilities: AvailabilityShortenedModel[]) {
       const hotelIds = availabilities.reduce(
         (allIds: string[], currentAvailability: AvailabilityShortenedModel) => {
@@ -179,7 +191,7 @@ export default defineComponent({
         // @ts-ignore
         if (locationsResponse?.data?.length) {
           // @ts-ignore
-          locations.value = locationsResponse.data as Location[];
+          locations.value = (locationsResponse.data as Location[]).sort(sortByName);
         }
       } catch (e) {
         // eslint-disable-next-line no-console

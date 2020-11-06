@@ -1,6 +1,16 @@
 <template>
   <div class="mt-6">
-    <div class="hotel-list">
+<!--    Only checks rooms without filter for hotels (wifi, etc.)-->
+<!--    <div class="text-center py-4">-->
+<!--      <div-->
+<!--        class="-->
+<!--          border border-solid border-gray-300 bg-gray-100 rounded-full inline-block text-sm-->
+<!--          px-4 py-2-->
+<!--      ">-->
+<!--        {{ itemsCount }} items found-->
+<!--      </div>-->
+<!--    </div>-->
+    <div v-if="hotelItems.length" class="hotel-list">
       <hotel-list-item
         v-for="item in hotelItems"
         :key="item.id"
@@ -30,6 +40,10 @@ export default defineComponent({
     availabilities: {
       type: Array as () => Hotel[],
       default: () => [],
+    },
+    itemsCount: {
+      type: Number,
+      default: 0,
     },
   },
 

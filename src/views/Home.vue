@@ -11,7 +11,11 @@
       />
     </div>
 
-    <search-results v-if="availabilities.length" :availabilities="availabilities" />
+    <search-results
+      v-if="availabilities.length"
+      :availabilities="availabilities"
+      :items-count="itemsFound"
+    />
   </div>
 </template>
 
@@ -35,9 +39,11 @@ export default defineComponent({
     const store = useStore();
 
     const availabilities = computed(() => store.getters[GetterTypes.GET_HOTELS]);
+    const itemsFound = computed(() => store.getters[GetterTypes.GET_AVAILABILITIES_COUNT]);
 
     return {
       availabilities,
+      itemsFound,
     };
   },
 });
