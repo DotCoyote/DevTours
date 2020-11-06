@@ -43,26 +43,16 @@
           </form>
         </div>
       </div>
-      <div class="bg-gray-200 w-full md:w-1/2 h-screen ">
+      <div class="bg-gray-200 w-full md:w-1/2 h-screen">
         <img
           :src="hotelData.images[0].hires"
-          class="h-full w-full object-cover "
+          class="h-full w-full object-cover"
           alt=""
         />
       </div>
 
     </template>
-    <div
-      v-else
-      class="
-        h-full w-full flex flex-row text-center text-gray-600 text-3xl
-        items-center justify-center
-      "
-    >
-      <div>
-        Loading...
-      </div>
-    </div>
+    <loading v-else />
   </div>
 </template>
 
@@ -72,13 +62,14 @@ import {
 } from 'vue';
 import router from '@/router';
 import { useApi } from '@/utils/api';
-import { APIRoutes } from '@/typings/api.types';
 import { Hotel, HotelRoom } from '@/typings/hotel.types';
+import Loading from '@/components/atoms/Loading.vue';
 
 export default defineComponent({
   name: 'hotel-details',
 
   components: {
+    Loading,
     Alert: defineAsyncComponent(() => import('@/components/atoms/Alert.vue')),
   },
 
@@ -93,7 +84,7 @@ export default defineComponent({
 
       router.push({
         name: 'Booking',
-        params: {
+        query: {
           roomId: roomSelection.value.id,
           hotelId: hotelData.value.id,
         },

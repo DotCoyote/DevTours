@@ -1,64 +1,68 @@
 <template>
-  <form
-    @submit.prevent="submitForm"
-    class="bg-gray-100 border border-solid border-gray-300 py-6 px-5 text-left">
-    <alert v-if="errorMessage" type="error">
-      {{ errorMessage }}
-    </alert>
+  <div class="bg-gray-100 border border-solid border-gray-300 py-6 px-5 text-left">
+    <form
+      v-if="locations"
+      @submit.prevent="submitForm"
+    >
+      <alert v-if="errorMessage" type="error">
+        {{ errorMessage }}
+      </alert>
 
-    <fieldset>
-      <legend class="text-2xl">Hotel Search</legend>
+      <fieldset>
+        <legend class="text-2xl">Hotel Search</legend>
 
-      <div class="flex flex-row justify-between items-center">
-        <!--      Location-->
-        <div>
-          <label for="searchLocation">Location:</label>
-          <select id="searchLocation" v-model="searchLocation">
-            <option />
-            <option
-              v-for="location in locations"
-              :key="location.id"
-              :value="location"
-            >
-              {{ location.name }}
-            </option>
-          </select>
+        <div class="flex flex-row justify-between items-center">
+          <!--      Location-->
+          <div>
+            <label for="searchLocation">Location:</label>
+            <select id="searchLocation" v-model="searchLocation">
+              <option />
+              <option
+                v-for="location in locations"
+                :key="location.id"
+                :value="location"
+              >
+                {{ location.name }}
+              </option>
+            </select>
+          </div>
+
+    <!--      Date-->
+          <div>
+            <label for="searchDateStart">Start-Date:</label>
+            <input
+              id="searchDateStart"
+              type="date"
+              v-model="searchDateStart"
+            />
+          </div>
+
+          <div>
+            <label for="searchDateEnd">End-Date:</label>
+            <input id="searchDateEnd" type="date" v-model="searchDateEnd" />
+          </div>
+
+          <div>
+            <label for="searchRating">Rating: </label>
+            <select name="searchRating" id="searchRating" v-model.number="searchRating">
+              <option v-for="rating in [1, 2, 3, 4, 5]" :key="rating" :value="rating">
+                {{ rating }}
+              </option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            class="
+              py-2 px-3 px-6 text-white bg-green-500 hover:bg-green-700 inline-block rounded
+            ">
+            Submit
+          </button>
         </div>
-
-  <!--      Date-->
-        <div>
-          <label for="searchDateStart">Start-Date:</label>
-          <input
-            id="searchDateStart"
-            type="date"
-            v-model="searchDateStart"
-          />
-        </div>
-
-        <div>
-          <label for="searchDateEnd">End-Date:</label>
-          <input id="searchDateEnd" type="date" v-model="searchDateEnd" />
-        </div>
-
-        <div>
-          <label for="searchRating">Rating: </label>
-          <select name="searchRating" id="searchRating" v-model.number="searchRating">
-            <option v-for="rating in [1, 2, 3, 4, 5]" :key="rating" :value="rating">
-              {{ rating }}
-            </option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          class="
-            py-2 px-3 px-6 text-white bg-green-500 hover:bg-green-700 inline-block rounded
-          ">
-          Submit
-        </button>
-      </div>
-    </fieldset>
-  </form>
+      </fieldset>
+    </form>
+    <loading v-else />
+  </div>
 </template>
 
 <script lang="ts">
@@ -68,9 +72,11 @@ import Alert from '@/components/atoms/Alert.vue';
 import { Location } from '@/typings/location.types';
 import { useStore } from '@/store';
 import { ActionTypes, GetterTypes } from '@/store/types';
+import Loading from '@/components/atoms/Loading.vue';
 
 export default defineComponent({
   components: {
+    Loading,
     Alert,
   },
 
@@ -82,7 +88,7 @@ export default defineComponent({
     const searchDateStart = ref<string>('');
     const searchDateEnd = ref<string>('');
     const searchRating = ref<number>(1);
-    const locations = ref<Location[]>([]);
+    const locations = ref<Location[] | null>(null);
     const errorMessage = ref<string | null>(null);
 
     async function submitForm() {
