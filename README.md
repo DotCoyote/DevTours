@@ -2,7 +2,7 @@
 
 > Test-Project
 
-This is a test-project for personal learning.
+This is a test-project for personal learning. I decided to go with Vue.js because it's an extremely simple to learn reactive Framework to build SPAs with. I wanted to try the new Version 3 in a practical project and it made a perfect fit as there were no 3rd party plugins needed to fulfill the requirements of this project.
 
 ## Installing / Getting started
 
@@ -59,7 +59,7 @@ the project further:
 
 ```shell
 git clone git@github.com:DotCoyote/DevTours.git
-cd dev-tours/
+cd DevTours/
 npm install
 ```
 

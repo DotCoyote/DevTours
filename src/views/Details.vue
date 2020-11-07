@@ -116,6 +116,7 @@ export default defineComponent({
       hotelId: router.currentRoute.value.params.id,
     });
 
+    // Form Submit
     function bookRoom() {
       if (!roomSelection.value || !hotelData.value) return;
 

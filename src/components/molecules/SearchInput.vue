@@ -136,6 +136,7 @@ export default defineComponent({
 
       const hotelDatas = await Promise.all(requests);
 
+      // Store found Hotels
       store.dispatch(
         ActionTypes.STORE_HOTELS, hotelDatas as Hotel[],
       );
@@ -160,6 +161,7 @@ export default defineComponent({
           params,
         });
 
+        // Keep search settings in the store
         store.dispatch(ActionTypes.STORE_SEARCH_VALUES, {
           ...params,
           location: searchLocation.value,
@@ -168,6 +170,7 @@ export default defineComponent({
         });
 
         if (response?.data) {
+          // Keep availabilities in the store
           store.dispatch(
             ActionTypes.STORE_AVAILABILITIES, response.data as AvailabilitiesPaginatedModel,
           );

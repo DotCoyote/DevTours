@@ -13,8 +13,7 @@ export const store = createStore({
   actions,
   getters,
   plugins,
-  modules: {
-  },
+  modules: {},
 });
 
 export function useStore() {

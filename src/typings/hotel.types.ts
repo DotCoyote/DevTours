@@ -1,4 +1,6 @@
 import { Location } from '@/typings/location.types';
+// eslint-disable-next-line import/no-cycle
+import { PriceEntryModel } from '@/typings/availability.types';
 
 export interface Image {
   hires: string;
@@ -39,4 +41,8 @@ export interface Hotel {
   amenities: HotelAmenities;
   images: Image[];
   rooms: HotelRoom[];
+}
+
+export interface HotelWithPrices extends Hotel {
+  price_per_night: PriceEntryModel;
 }
