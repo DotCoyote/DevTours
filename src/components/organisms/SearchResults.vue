@@ -26,7 +26,7 @@
 import {
   defineComponent, computed, watch, ref,
 } from 'vue';
-import { Hotel } from '@/typings/hotel.types';
+import { HotelWithPrices } from '@/typings/hotel.types';
 import HotelListItem from '@/components/molecules/HotelListItem.vue';
 import { useStore } from '@/store';
 import { FilterValues, GetterTypes } from '@/store/types';
@@ -38,7 +38,7 @@ export default defineComponent({
 
   props: {
     availabilities: {
-      type: Array as () => Hotel[],
+      type: Array as () => HotelWithPrices[],
       default: () => [],
     },
     itemsCount: {
@@ -51,20 +51,27 @@ export default defineComponent({
     const store = useStore();
     const filterValues = computed(() => store.getters[GetterTypes.GET_FILTER_VALUES]);
     const searchValues = computed(() => store.getters[GetterTypes.GET_SEARCH_VALUES]);
-    const hotelItems = ref<Hotel[]>(props.availabilities);
+    const hotelItems = ref<HotelWithPrices[]>(props.availabilities);
 
     function setHotelItems(filters: FilterValues) {
       hotelItems.value = props.availabilities.filter(
-        (hotel: Hotel) => (
-          !filters.breakfastIncluded
+        (hotel: HotelWithPrices) => (
+          (!filters.breakfastIncluded
             || (filters.breakfastIncluded && hotel.amenities.breakfast_included)
-        )
+          )
             && (!filters.freeWifi
               || (filters.freeWifi && hotel.amenities.free_wifi)
             )
             && (!filters.freeCancellation
               || (filters.freeCancellation && hotel.amenities.free_cancellation)
-            ),
+            )
+            && (!filters.minPrice
+              || hotel.price_per_night.amount > filters.minPrice
+            )
+            && (!filters.maxPrice
+              || hotel.price_per_night.amount < filters.maxPrice
+            )
+        ),
       );
     }
 
