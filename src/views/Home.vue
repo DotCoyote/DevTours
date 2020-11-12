@@ -72,10 +72,11 @@ export default defineComponent({
     }
 
     const searchResults = computed<HotelWithPrices[]>(() => hotels.value.map((hotel: Hotel) => {
-      const matchingAvailabilties = availabilities.value.items.filter(
+      const matchingAvailabilities = availabilities.value.items.filter(
         (availability: AvailabilityShortenedModel) => availability.hotelId === hotel.id,
       );
-      const lowestPrice = getLowestPriceFromAvailability(matchingAvailabilties);
+      if (!matchingAvailabilities) return false;
+      const lowestPrice = getLowestPriceFromAvailability(matchingAvailabilities);
       return {
         ...hotel,
         // eslint-disable-next-line @typescript-eslint/camelcase

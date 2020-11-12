@@ -170,12 +170,28 @@ export default defineComponent({
         });
 
         if (response?.data) {
-          // Keep availabilities in the store
-          store.dispatch(
-            ActionTypes.STORE_AVAILABILITIES, response.data as AvailabilitiesPaginatedModel,
-          );
+          if (response?.data.count === 0) {
+            console.debug('No items found');
+          }
 
-          getHotelsToRooms(response.data.items);
+          // Clear old availabilities
+          await Promise.all([
+            store.dispatch(
+              ActionTypes.STORE_AVAILABILITIES, {
+                items: [], count: 0, skip: 0, top: 99,
+              },
+            ),
+            store.dispatch(
+              ActionTypes.STORE_HOTELS, [],
+            ),
+          ]);
+
+          await Promise.all([
+            store.dispatch(
+              ActionTypes.STORE_AVAILABILITIES, response.data as AvailabilitiesPaginatedModel,
+            ),
+            getHotelsToRooms(response.data.items),
+          ]);
         }
       } catch (e) {
         // eslint-disable-next-line no-console
